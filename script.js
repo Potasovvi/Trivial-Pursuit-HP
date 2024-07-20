@@ -16,6 +16,16 @@ function calculateScore() {
         q10: 'a'
         // Risposte corrette per il quiz del quinto film
         // q1: 'a', q2: 'b', ...
+        q1: 'd', // Dolores Umbridge
+        q2: 'b', // Albus Silente
+        q3: 'a', // Ufficio del Direttore
+        q4: 'a', // Sirius Black
+        q5: 'b', // L'Armata di Silente
+        q6: 'b', // Bellatrix Lestrange
+        q7: 'a', // La Profecia di Sibilla
+        q8: 'a', // Sibilla Cooman
+        q9: 'b', // Rufus Scrimgeour
+        q10: 'c' // Dobby
     };
 
     let score = 0;
