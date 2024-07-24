@@ -5,7 +5,7 @@ function calculateScore() {
         q3: 'b',
         q4: 'a',
         q5: 'b',
-        q6: 'b',
+        q6: 'a',
         q7: 'b',
         q8: 'a',
         q9: 'a',
