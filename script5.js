@@ -4,11 +4,11 @@ const correctAnswers = {
         };
 
         function checkAnswer(questionNumber) {
-            const userAnswer = document.getElementById(`answer${questionNumber}`).value.trim();
+            const userAnswer = document.getElementById(`answer${questionNumber}`).value.trim().toLowerCase();
             const feedbackElement = document.getElementById(`feedback${questionNumber}`);
             const isCorrect = correctAnswers[questionNumber].some(answer => answer.toLowerCase() === userAnswer);        
             
-            if (userAnswer.toLowerCase() === correctAnswers[questionNumber].toLowerCase()) {
+        <--    if (userAnswer.toLowerCase() === correctAnswers[questionNumber].toLowerCase()) { -->
                         if (isCorrect) {
                 feedbackElement.textContent = "Risposta corretta!";
                 feedbackElement.style.color = "green";
