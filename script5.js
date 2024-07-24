@@ -28,8 +28,8 @@ const correctAnswers = {
                 feedbackElement.textContent = "Risposta sbagliata. Riprova.";
                 feedbackElement.style.color = "red";
             }
-            document.getElementById('result').innerHTML = `Hai ottenuto ${score} su ${Object.keys(answers).length} punti.`;
-         } 
-            
+            return score;
+   } 
+           
 
 
