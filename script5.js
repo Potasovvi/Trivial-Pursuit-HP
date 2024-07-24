@@ -3,7 +3,7 @@ const correctAnswers = {
             2: ["Harry Potter", "Harry", "Potter"],
             3: ["Harry Potter e l'Ordine della Fenice"],
             4: ["12 Grimmauld Place", "numero 12 di Grimmauld Place"],
-            5: ["Albus Silente"],
+            5: ["Albus Silente", "Silente"],
             6: ["Thestral", "Thestrals"],
             7: ["Cornelius Caramell"],
             8: ["Cervo"],
