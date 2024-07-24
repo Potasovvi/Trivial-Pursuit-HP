@@ -12,6 +12,7 @@ const correctAnswers = {
         };
 
         function checkAnswer(questionNumber) {
+            let score = 0;                    
             const userAnswer = document.getElementById(`answer${questionNumber}`).value.trim().toLowerCase();
             const feedbackElement = document.getElementById(`feedback${questionNumber}`);
             const isCorrect = correctAnswers[questionNumber].some(answer => answer.toLowerCase() === userAnswer);        
@@ -20,6 +21,7 @@ const correctAnswers = {
                         if (isCorrect) {
                 feedbackElement.textContent = "Risposta corretta!";
                 feedbackElement.style.color = "green";
+                    score++;
                                        }
          <!--   } --> 
                     else {
@@ -27,3 +29,6 @@ const correctAnswers = {
                 feedbackElement.style.color = "red";
             }
          } 
+            document.getElementById('result').innerHTML = `Hai ottenuto ${score} su ${Object.keys(answers).length} punti.`;
+
+
