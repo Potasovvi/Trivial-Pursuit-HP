@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz: Harry Potter e l'Ordine della Fenice</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .question {
+            margin-bottom: 20px;
+        }
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <div class="quiz-container">
@@ -12,15 +21,19 @@
         <!-- <form id="quizForm"> -->
             <!-- Inserisci qui le domande per il quinto film -->
 
-
-        
-
 <div class="question">
-        <p><strong>Domanda 1:</strong> Qual è il nome del professore che insegna Difesa Contro le Arti Oscure nel quinto anno di Harry a Hogwarts?</p>
-    </div>
-    <div class="question">
+       <p><strong>Domanda 1:</strong> Qual è il nome del professore che insegna Difesa Contro le Arti Oscure nel quinto anno di Harry a Hogwarts?</p>
+        <input type="text" id="answer1" placeholder="La tua risposta">
+        <button onclick="checkAnswer(1)">Invia</button>
+        <p id="feedback1" class="feedback"></p> 
+</div>
+<div class="question">
         <p><strong>Domanda 2:</strong> Chi forma l'Esercito di Silente per insegnare ai compagni di scuola incantesimi di difesa?</p>
-    </div>
+        <input type="text" id="answer2" placeholder="La tua risposta">
+        <button onclick="checkAnswer(2)">Invia</button>
+        <p id="feedback2" class="feedback"></p>
+    
+ </div>
     <div class="question">
         <p><strong>Domanda 3:</strong> Qual è il nome completo del quinto libro della serie di Harry Potter?</p>
     </div>
@@ -45,9 +58,6 @@
     <div class="question">
         <p><strong>Domanda 10:</strong> Qual è il nome del giornale che pubblica articoli diffamatori su Harry e Silente?</p>
     </div>
-
-
-        
 
             <!-- Copia e incolla il codice per le domande del quinto film qui -->
             <!-- ... -->
