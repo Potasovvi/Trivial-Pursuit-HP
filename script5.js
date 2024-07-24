@@ -5,7 +5,7 @@ const correctAnswers = {
             4: ["12 Grimmauld Place", "numero 12 di Grimmauld Place"],
             5: ["Albus Silente", "Silente"],
             6: ["Thestral", "Thestrals"],
-            7: ["Cornelius Caramell"],
+            7: ["Cornelius Caramell","Caramell"],
             8: ["Cervo"],
             9: ["Severus Piton", "Piton"],
             10: ["La Gazzetta del Profeta", "Gazzetta del Profeta"]
