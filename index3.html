@@ -73,5 +73,34 @@
             getFileSha().then(updateFile).catch(console.error);
         });
     </script>
+
+<script>
+        // URL del file JSON su GitHub
+        const url = 'https://raw.githubusercontent.com/username/repository/main/data.json';
+
+        // Funzione per ottenere i dati
+        async function getData() {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                const data = await response.json();
+                // Visualizza i dati
+                document.getElementById('quizData').innerHTML = `
+                    <p>Nome: ${data.name}</p>
+                    <p>Cognome: ${data.surname}</p>
+                    <p>Punteggio: ${data.score}</p>
+                `;
+            } catch (error) {
+                console.error('There has been a problem with your fetch operation:', error);
+            }
+        }
+
+        // Chiama la funzione per ottenere i dati
+        getData();
+    </script>
+
+    
 </body>
 </html>
