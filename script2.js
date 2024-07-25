@@ -22,6 +22,5 @@ function calculateScore() {
         }
     }
 
-    document.getElementById('result').innerHTML = `Hai ottenuto ${score} su ${Object.keys(answers).length} punti.`;
-    return(score);
+    document.getElementById('result').innerHTML = `Hai ottenuto ${score} su ${Object.keys(answers).length} punti.`;    
 }
