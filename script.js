@@ -7,7 +7,7 @@ document.getElementById('nameForm').addEventListener('submit', function(event) {
     console.log("Nome: " + firstName);
     console.log("Cognome: " + lastName);
 
-    fetch('https://script.google.com/macros/s/AKfycbwUEUcpbAtUPHT396AjDK7sAqzQq-nQcHmu7OFpKoEXEYQwpENyMNukdY9I27wMp_QWFg/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbwrgbRdUfiPlYagqhiLs09_jNIGaAj-EC3us80LUlHoarXaaSu557cG0Yd72FzS0tBwUQ/exec', {
         method: 'POST',
         body: JSON.stringify({ firstName: firstName, lastName: lastName }),
         headers: {
