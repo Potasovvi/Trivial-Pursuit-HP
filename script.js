@@ -1,19 +1,23 @@
-document.getElementById('submitForm').addEventListener('click', function(e) {
-  e.preventDefault(); // Impedisce il comportamento di invio del form predefinito
+document.getElementById('nameForm').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-  const firstName = document.getElementById('firstName').value;
-  const lastName = document.getElementById('lastName').value;
-  const score = calculateScore(); // Funzione per calcolare il punteggio
+    var firstName = document.getElementById('firstName').value;
+    var lastName = document.getElementById('lastName').value;
 
-  fetch('https://script.google.com/macros/s/AKfycbxECz4q4EHqzTOmS4Gjbl0xjY3eojTulZcZfbNU8IIJwpTB0l5FSCJQ5WtQfh7eBLKSIA/exec', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ firstName, lastName, score })
-  }).then(response => response.text())
-    .then(data => alert(data))
-    .catch(error => console.error('Error:', error));
+    fetch('https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbzLE6LBhtYDYklegRwjh0ut4eOY6_uNKz_K8MxHa-7rH97Bh9DhOxcNsMd2j_h11gyr/exec', {
+        method: 'POST',
+        body: JSON.stringify({ firstName: firstName, lastName: lastName }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => response.json())
+      .then(data => {
+          console.log(data);
+          // You can handle the response here
+      }).catch(error => {
+          console.error('Error:', error);
+      });
 });
+
 
 
