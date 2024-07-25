@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update GitHub File</title>
+</head>
+<body>
+    <h1>Update GitHub File Example</h1>
+    <button id="updateButton">Update File</button>
+
+    <script>
+        // Impostazioni
+        const repoOwner = 'username';  // Cambia con il tuo username GitHub
+        const repoName = 'repository';  // Cambia con il nome del tuo repository
+        const filePath = 'data.json';  // Percorso al file che vuoi aggiornare
+        const token = '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';  // Il tuo token di accesso personale
+
+        // Nuovi dati da inserire nel file JSON
+        const newData = {
+            name: "Mario",
+            surname: "Rossi",
+            score: 95
+        };
+
+        // Funzione per ottenere l'ultimo SHA del file
+        async function getFileSha() {
+            const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
+            const headers = {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+json'
+            };
+            const response = await fetch(url, { headers });
+            if (!response.ok) {
+                throw new Error(`Errore nella richiesta SHA: ${response.statusText}`);
+            }
+            const responseData = await response.json();
+            return responseData.sha;
+        }
+
+        // Funzione per aggiornare il file su GitHub
+        async function updateFile(sha) {
+            const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`;
+            const headers = {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+json'
+            };
+            const newContent = btoa(JSON.stringify(newData)); // Codifica il contenuto in base64
+            const updateData = {
+                message: "Aggiornamento dati JSON",
+                committer: {
+                    name: "Your Name",
+                    email: "your_email@example.com"
+                },
+                content: newContent,
+                sha: sha
+            };
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: headers,
+                body: JSON.stringify(updateData)
+            });
+            if (response.ok) {
+                console.log("File aggiornato con successo!");
+            } else {
+                console.error(`Errore nell'aggiornamento del file: ${response.status}`);
+                console.error(await response.json());
+            }
+        }
+
+        // Esecuzione al click del bottone
+        document.getElementById('updateButton').addEventListener('click', () => {
+            getFileSha().then(updateFile).catch(console.error);
+        });
+    </script>
+</body>
+</html>
