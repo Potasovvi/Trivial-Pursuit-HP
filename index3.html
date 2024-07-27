@@ -43,6 +43,10 @@
 
             transaction.oncomplete = function() {
                 console.log("Dati salvati con successo su IndexedDB!");
+
+                 // Cancella il contenuto nei campi del form
+            document.getElementById("firstName").value = "";
+            document.getElementById("lastName").value = "";
             };
         }
     </script>
