@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Utente</title>
+</head>
+<body>
+    <h1>Inserisci Nome e Cognome</h1>
+    <form id="userForm">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" required>
+        <br>
+        <label for="cognome">Cognome:</label>
+        <input type="text" id="cognome" required>
+        <br>
+        <button type="button" onclick="salvaDati()">Salva</button>
+    </form>
+
+    <script>
+        function salvaDati() {
+            const nome = document.getElementById('nome').value;
+            const cognome = document.getElementById('cognome').value;
+
+            // Salvataggio nel localStorage
+            localStorage.setItem('utente_nome', nome);
+            localStorage.setItem('utente_cognome', cognome);
+
+            alert('Dati salvati correttamente!');
+        }
+    </script>
+</body>
+</html>
