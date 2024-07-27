@@ -3,30 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Utente</title>
+    <title>Salva su IndexedDB</title>
 </head>
 <body>
-    <h1>Inserisci Nome e Cognome</h1>
-    <form id="userForm">
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" required>
+    <h1>Salva Nome e Cognome su IndexedDB</h1>
+    <form id="myForm">
+        <label for="firstName">Nome:</label>
+        <input type="text" id="firstName" required>
         <br>
-        <label for="cognome">Cognome:</label>
-        <input type="text" id="cognome" required>
+        <label for="lastName">Cognome:</label>
+        <input type="text" id="lastName" required>
         <br>
         <button type="button" onclick="salvaDati()">Salva</button>
     </form>
 
     <script>
+        // Apri il database
+        const request = window.indexedDB.open("MyTestDatabase", 3);
+
+        request.onupgradeneeded = function(event) {
+            const db = event.target.result;
+            const store = db.createObjectStore("utenti", { keyPath: "ID", autoIncrement: true });
+        };
+
         function salvaDati() {
-            const nome = document.getElementById('nome').value;
-            const cognome = document.getElementById('cognome').value;
+            const db = request.result;
+            const transaction = db.transaction(["utenti"], "readwrite");
+            const store = transaction.objectStore("utenti");
 
-            // Salvataggio nel localStorage
-            localStorage.setItem('utente_nome', nome);
-            localStorage.setItem('utente_cognome', cognome);
+            const nome = document.getElementById("firstName").value;
+            const cognome = document.getElementById("lastName").value;
 
-            alert('Dati salvati correttamente!');
+            const utente = { Nome: nome, Cognome: cognome };
+            store.add(utente);
+
+            transaction.oncomplete = function() {
+                console.log("Dati salvati con successo su IndexedDB!");
+            };
         }
     </script>
 </body>
