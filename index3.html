@@ -6,7 +6,7 @@
     <title>Salva su IndexedDB</title>
 </head>
 <body>
-    <h1>Salva Nome e Cognome su Indexed</h1>
+    <h1>Salva Nome e Cognome su Indexeeeeeeeeeeed</h1>
     <form id="myForm">
         <label for="firstName">Nome:</label>
         <input type="text" id="firstName" required>
@@ -71,25 +71,6 @@
                     } ;          
            
             }
-
-        function verificaCognome(cognome) {
-    const transaction = db.transaction("utenti", "readonly");
-    const store = transaction.objectStore("utenti");
-
-    const request = store.openCursor();
-    request.onsuccess = function(event) {
-        const cursor = event.target.result;
-        if (cursor) {
-            const existingCognome = cursor.value.Cognome;
-            if (existingCognome === cognome) {
-                // Il cognome è già presente, mostra un messaggio di errore
-                alert("Hai già fatto il test!");
-                return;
-            }
-            cursor.continue();
-        }
-    };
-}
     </script>
 </body>
 </html>
