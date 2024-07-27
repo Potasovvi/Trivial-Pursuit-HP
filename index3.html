@@ -18,16 +18,18 @@
     </form>
 
     <script>
-        // Apri il database
-        const request = window.indexedDB.open("MyTestDatabase", 3);
-
-        request.onupgradeneeded = function(event) {
-            const db = event.target.result;
-            const store = db.createObjectStore("utenti", { keyPath: "ID", autoIncrement: true });
-                                                   };
+        
 
         function salvaDati()
         {
+            // Apri il database
+            const request = window.indexedDB.open("MyTestDatabase", 3);
+
+            request.onupgradeneeded = function(event) {
+            const db = event.target.result;
+            const store = db.createObjectStore("utenti", { keyPath: "ID", autoIncrement: true });
+                                                   };
+            
             const db = request.result;
             const transaction = db.transaction(["utenti"], "readwrite");
             const store = transaction.objectStore("utenti");
