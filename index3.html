@@ -87,6 +87,8 @@
                 if (!exists) {
                     await saveUser(db, nome, cognome);
                     alert('Utente salvato con successo.');
+                    document.getElementById('nome').value = '';
+                    document.getElementById('cognome').value = '';
                     window.location.href = 'https://potasovvi.github.io/Trivial-Pursuit-HP/index2.html';
                 } else {
                     alert('Utente già presente.');
