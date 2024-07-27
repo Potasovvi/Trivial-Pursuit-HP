@@ -13,8 +13,7 @@
         <br>
         <label for="lastName">Cognome:</label>
         <input type="text" id="lastName" required>
-        <br>
-        
+        <br>        
         <button type="button" onclick="salvaDati()">Salva</button>
     </form>
 
@@ -25,9 +24,10 @@
         request.onupgradeneeded = function(event) {
             const db = event.target.result;
             const store = db.createObjectStore("utenti", { keyPath: "ID", autoIncrement: true });
-        };
+                                                   };
 
-        function salvaDati() {
+        function salvaDati()
+        {
             const db = request.result;
             const transaction = db.transaction(["utenti"], "readwrite");
             const store = transaction.objectStore("utenti");
@@ -46,7 +46,7 @@
                         {
                         // Il cognome è già presente, mostra un messaggio di errore
                         alert("Hai già fatto il test!");
-                    return;
+                        return;
                         }
                     else 
                         {
@@ -58,18 +58,19 @@
                     const utente = { Nome: nome, Cognome: cognome };
                     store.add(utente);
 
-                    transaction.oncomplete = function() {
-                    console.log("Dati salvati con successo su IndexedDB!");
+                                                transaction.oncomplete = function() 
+                                                {
+                                                    console.log("Dati salvati con successo su IndexedDB!");
 
-                     // Cancella il contenuto nei campi del form
-                    document.getElementById("firstName").value = "";
-                    document.getElementById("lastName").value = "";
-                        } ;  
-                        }
+                                                     // Cancella il contenuto nei campi del form
+                                                    document.getElementById("firstName").value = "";
+                                                    document.getElementById("lastName").value = "";
+                                                  }   
+                            }
                     cursor.continue();
-                    }           
+                    } ;          
            
-        }
+            }
 
         function verificaCognome(cognome) {
     const transaction = db.transaction("utenti", "readonly");
