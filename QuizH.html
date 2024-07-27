@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inserimento Utente</title>
+    <title>Quiz</title>
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             function initDatabase() {
@@ -29,41 +29,22 @@
                 });
             }
 
-            function userExists(db, nome, cognome) {
-                return new Promise((resolve, reject) => {
-                    let transaction = db.transaction(['users'], 'readonly');
-                    let store = transaction.objectStore('users');
-                    let index = store.index('nome');
-                    let request = index.openCursor();
-
-                    request.onsuccess = (event) => {
-                        let cursor = event.target.result;
-                        if (cursor) {
-                            if (cursor.value.nome === nome && cursor.value.cognome === cognome) {
-                                resolve(cursor.value.id);
-                            } else {
-                                cursor.continue();
-                            }
-                        } else {
-                            resolve(false);
-                        }
-                    };
-
-                    request.onerror = (event) => {
-                        reject(event.target.error);
-                    };
-                });
-            }
-
-            function saveUser(db, nome, cognome) {
+            function updateUserScore(db, userId, score) {
                 return new Promise((resolve, reject) => {
                     let transaction = db.transaction(['users'], 'readwrite');
                     let store = transaction.objectStore('users');
-                    let user = { nome: nome, cognome: cognome, punteggio: 0 };
-                    let request = store.add(user);
+                    let request = store.get(userId);
 
                     request.onsuccess = (event) => {
-                        resolve(event.target.result);
+                        let user = event.target.result;
+                        user.punteggio += score;
+                        let updateRequest = store.put(user);
+                        updateRequest.onsuccess = () => {
+                            resolve();
+                        };
+                        updateRequest.onerror = (event) => {
+                            reject(event.target.error);
+                        };
                     };
 
                     request.onerror = (event) => {
@@ -72,32 +53,41 @@
                 });
             }
 
-            document.getElementById('saveButton').addEventListener('click', async (event) => {
+            document.getElementById('submitAnswer').addEventListener('click', async (event) => {
                 event.preventDefault();
-                let nome = document.getElementById('nome').value;
-                let cognome = document.getElementById('cognome').value;
+                let selectedAnswer = document.querySelector('input[name="answer"]:checked').value;
+                let correctAnswer = 'B'; // La risposta corretta
 
-                let db = await initDatabase();
-                let userId = await userExists(db, nome, cognome);
-
+                let userId = localStorage.getItem('userId');
                 if (!userId) {
-                    userId = await saveUser(db, nome, cognome);
+                    alert('Utente non trovato!');
+                    return;
                 }
 
-                localStorage.setItem('userId', userId);
-                window.location.href = 'quiz.html';
+                let db = await initDatabase();
+                if (selectedAnswer === correctAnswer) {
+                    await updateUserScore(db, userId, 1);
+                    alert('Risposta corretta! Punteggio aggiornato.');
+                } else {
+                    alert('Risposta errata. Riprova.');
+                }
             });
         });
     </script>
 </head>
 <body>
-    <h1>Inserimento Utente</h1>
-    <form id="registrationForm">
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" required><br><br>
-        <label for="cognome">Cognome:</label>
-        <input type="text" id="cognome" name="cognome" required><br><br>
-        <button id="saveButton">Salva</button>
+    <h1>Quiz a Risposta Multipla</h1>
+    <form id="quizForm">
+        <p>Qual è la capitale della Francia?</p>
+        <input type="radio" id="answerA" name="answer" value="A">
+        <label for="answerA">A) Madrid</label><br>
+        <input type="radio" id="answerB" name="answer" value="B">
+        <label for="answerB">B) Parigi</label><br>
+        <input type="radio" id="answerC" name="answer" value="C">
+        <label for="answerC">C) Roma</label><br>
+        <input type="radio" id="answerD" name="answer" value="D">
+        <label for="answerD">D) Berlino</label><br><br>
+        <button id="submitAnswer">Invia Risposta</button>
     </form>
 </body>
 </html>
