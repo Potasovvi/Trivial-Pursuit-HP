@@ -52,28 +52,4 @@
                 let table = document.getElementById('usersTable');
                 table.innerHTML = '<tr><th>ID</th><th>Nome</th><th>Cognome</th><th>Punteggio</th></tr>';
                 
-                users.forEach(user => {
-                    let row = table.insertRow();
-                    row.insertCell(0).innerText = user.id;
-                    row.insertCell(1).innerText = user.nome;
-                    row.insertCell(2).innerText = user.cognome;
-                    row.insertCell(3).innerText = user.punteggio;
-                });
-            }
-
-            displayUsers();
-        });
-    </script>
-</head>
-<body>
-    <h1>Visualizza Utenti Registrati</h1>
-    <table id="usersTable" border="1">
-        <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Cognome</th>
-            <th>Punteggio</th>
-        </tr>
-    </table>
-</body>
-</html>
+               
