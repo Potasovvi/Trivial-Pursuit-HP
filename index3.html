@@ -3,76 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salva su IndexedDB</title>
+    <title>Registrazione Utente</title>
 </head>
 <body>
-    <h1>Salva Nome e Cognome aNDREA BElotti</h1>
-    <form id="myForm">
-        <label for="firstName">Nome:</label>
-        <input type="text" id="firstName" required>
+    <h1>Registrazione Utente</h1>
+    <form id="userForm">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" required>
         <br>
-        <label for="lastName">Cognome:</label>
-        <input type="text" id="lastName" required>
-        <br>        
+        <label for="cognome">Cognome:</label>
+        <input type="text" id="cognome" required>
+        <br>
         <button type="button" onclick="salvaDati()">Salva</button>
     </form>
 
     <script>
-        
+        // Inizializza il database IndexedDB
+        const dbName = 'UtentiDB';
+        const dbVersion = 1;
+        const request = indexedDB.open(dbName, dbVersion);
 
-        function salvaDati()
-        {
-            // Apri il database
-            const request = window.indexedDB.open("MyTestDatabase", 3);
-
-            request.onupgradeneeded = function(event) {
+        request.onupgradeneeded = function(event) {
             const db = event.target.result;
-            const store = db.createObjectStore("utenti", { keyPath: "ID", autoIncrement: true });
-                                                   };
-            
-            const db = request.result;
-            const transaction = db.transaction(["utenti"], "readwrite");
-            const store = transaction.objectStore("utenti");
+            const objectStore = db.createObjectStore('utenti', { keyPath: 'id', autoIncrement: true });
+            objectStore.createIndex('nome', 'nome', { unique: true });
+            objectStore.createIndex('cognome', 'cognome', { unique: true });
+            objectStore.createIndex('punteggio', 'punteggio');
+        };
 
-            const nome = document.getElementById("firstName").value;
-            const cognome = document.getElementById("lastName").value;
+        request.onsuccess = function(event) {
+            const db = event.target.result;
 
-            const request = store.openCursor();
-                request.onsuccess = function(event) 
-                {
-                const cursor = event.target.result;
-                    
-                if (cursor) {
-                    const existingCognome = cursor.value.Cognome;
-                        if (existingCognome === cognome) 
-                        {
-                        // Il cognome è già presente, mostra un messaggio di errore
-                        alert("Hai già fatto il test!");
-                        return;
-                        }
-                    else 
-                        {
-                          const quizLink = "https://potasovvi.github.io/Trivial-Pursuit-HP/index2.html"; // Inserisci il link del quiz esterno
+            function salvaDati() {
+                const nome = document.getElementById('nome').value;
+                const cognome = document.getElementById('cognome').value;
 
-                     // Reindirizzamento
-                    window.location.href = quizLink + "?nome=" + nome + "&cognome=" + cognome;
-            
-                    const utente = { Nome: nome, Cognome: cognome };
-                    store.add(utente);
+                const transaction = db.transaction(['utenti'], 'readwrite');
+                const objectStore = transaction.objectStore('utenti');
 
-                                                transaction.oncomplete = function() 
-                                                {
-                                                    console.log("Dati salvati con successo su IndexedDB!");
+                const request = objectStore.add({ nome, cognome, punteggio: 0 });
 
-                                                     // Cancella il contenuto nei campi del form
-                                                    document.getElementById("firstName").value = "";
-                                                    document.getElementById("lastName").value = "";
-                                                  }   
-                            }
-                    cursor.continue();
-                    }           
-               };
+                request.onsuccess = function() {
+                    console.log('Dati salvati con successo!');
+                    // Reindirizza a un link esterno (esempio: Google)
+                    window.location.href = 'https://www.google.com';
+                };
+
+                request.onerror = function(event) {
+                    console.error('Errore durante il salvataggio dei dati:', event.target.error);
+                };
             }
+        };
+
+        request.onerror = function(event) {
+            console.error('Errore durante l\'apertura del database:', event.target.error);
+        };
     </script>
 </body>
 </html>
