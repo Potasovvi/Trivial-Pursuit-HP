@@ -14,6 +14,7 @@
         <label for="lastName">Cognome:</label>
         <input type="text" id="lastName" required>
         <br>
+        
         <button type="button" onclick="salvaDati()">Salva</button>
     </form>
 
@@ -33,22 +34,61 @@
 
             const nome = document.getElementById("firstName").value;
             const cognome = document.getElementById("lastName").value;
-            const quizLink = "https://potasovvi.github.io/Trivial-Pursuit-HP/index2.html"; // Inserisci il link del quiz esterno
 
-             // Reindirizzamento
-            window.location.href = quizLink + "?nome=" + nome + "&cognome=" + cognome;
+            const request = store.openCursor();
+                request.onsuccess = function(event) 
+                {
+                const cursor = event.target.result;
+                    
+                if (cursor) {
+                    const existingCognome = cursor.value.Cognome;
+                        if (existingCognome === cognome) 
+                        {
+                        // Il cognome è già presente, mostra un messaggio di errore
+                        alert("Hai già fatto il test!");
+                    return;
+                        }
+                    else 
+                        {
+                          const quizLink = "https://potasovvi.github.io/Trivial-Pursuit-HP/index2.html"; // Inserisci il link del quiz esterno
+
+                     // Reindirizzamento
+                    window.location.href = quizLink + "?nome=" + nome + "&cognome=" + cognome;
             
-            const utente = { Nome: nome, Cognome: cognome };
-            store.add(utente);
+                    const utente = { Nome: nome, Cognome: cognome };
+                    store.add(utente);
 
-            transaction.oncomplete = function() {
-                console.log("Dati salvati con successo su IndexedDB!");
+                    transaction.oncomplete = function() {
+                    console.log("Dati salvati con successo su IndexedDB!");
 
-                 // Cancella il contenuto nei campi del form
-            document.getElementById("firstName").value = "";
-            document.getElementById("lastName").value = "";
-            };
+                     // Cancella il contenuto nei campi del form
+                    document.getElementById("firstName").value = "";
+                    document.getElementById("lastName").value = "";
+                        } ;  
+                        }
+                    cursor.continue();
+                    }           
+           
         }
+
+        function verificaCognome(cognome) {
+    const transaction = db.transaction("utenti", "readonly");
+    const store = transaction.objectStore("utenti");
+
+    const request = store.openCursor();
+    request.onsuccess = function(event) {
+        const cursor = event.target.result;
+        if (cursor) {
+            const existingCognome = cursor.value.Cognome;
+            if (existingCognome === cognome) {
+                // Il cognome è già presente, mostra un messaggio di errore
+                alert("Hai già fatto il test!");
+                return;
+            }
+            cursor.continue();
+        }
+    };
+}
     </script>
 </body>
 </html>
