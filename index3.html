@@ -14,7 +14,7 @@
         <label for="cognome">Cognome:</label>
         <input type="text" id="cognome" required>
         <br>
-        <button type="button" onclick="salvaDati()">Salva</button>
+        <button type="button" onclick="SALVADATI()">Salva</button>
     </form>
 
     <script>
@@ -34,7 +34,7 @@
         request.onsuccess = function(event) {
             const db = event.target.result;
 
-            function salvaDati() {
+            function SALVADATI() {
                 const nome = document.getElementById('nome').value;
                 const cognome = document.getElementById('cognome').value;
 
