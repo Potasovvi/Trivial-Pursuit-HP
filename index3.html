@@ -33,7 +33,11 @@
 
             const nome = document.getElementById("firstName").value;
             const cognome = document.getElementById("lastName").value;
+            const quizLink = "https://potasovvi.github.io/Trivial-Pursuit-HP/index2.html"; // Inserisci il link del quiz esterno
 
+             // Reindirizzamento
+            window.location.href = quizLink + "?nome=" + nome + "&cognome=" + cognome;
+            
             const utente = { Nome: nome, Cognome: cognome };
             store.add(utente);
 
