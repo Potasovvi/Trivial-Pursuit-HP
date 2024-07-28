@@ -3,101 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrazioneeeeeeeeeeeeeeeeeeeeeeeeeee Utente</title>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            function initDatabase() {
-                return new Promise((resolve, reject) => {
-                    let request = indexedDB.open('UserDatabase', 1);
-
-                    request.onupgradeneeded = (event) => {
-                        let db = event.target.result;
-                        if (!db.objectStoreNames.contains('users')) {
-                            let objectStore = db.createObjectStore('users', { keyPath: 'id', autoIncrement: true });
-                            objectStore.createIndex('nome', 'nome', { unique: false });
-                            objectStore.createIndex('cognome', 'cognome', { unique: false });
-                        }
-                    };
-
-                    request.onsuccess = (event) => {
-                        resolve(event.target.result);
-                    };
-
-                    request.onerror = (event) => {
-                        reject(event.target.error);
-                    };
-                });
-            }
-
-            function userExists(db, nome, cognome) {
-                return new Promise((resolve, reject) => {
-                    let transaction = db.transaction(['users'], 'readonly');
-                    let store = transaction.objectStore('users');
-                    let index = store.index('nome');
-                    let request = index.openCursor();
-
-                    request.onsuccess = (event) => {
-                        let cursor = event.target.result;
-                        if (cursor) {
-                            if (cursor.value.nome === nome && cursor.value.cognome === cognome) {
-                                resolve(cursor.value.id);
-                            } else {
-                                cursor.continue();
-                            }
-                        } else {
-                            resolve(false);
-                        }
-                    };
-
-                    request.onerror = (event) => {
-                        reject(event.target.error);
-                    };
-                });
-            }
-
-            function saveUser(db, nome, cognome) {
-                return new Promise((resolve, reject) => {
-                    let transaction = db.transaction(['users'], 'readwrite');
-                    let store = transaction.objectStore('users');
-                    let user = { nome: nome, cognome: cognome, punteggio: 0 };
-                    let request = store.add(user);
-
-                    request.onsuccess = (event) => {
-                        resolve(event.target.result);
-                    };
-
-                    request.onerror = (event) => {
-                        reject(event.target.error);
-                    };
-                });
-            }
-
-            document.getElementById('saveButton').addEventListener('click', async (event) => {
-                event.preventDefault();
-                let nome = document.getElementById('nome').value;
-                let cognome = document.getElementById('cognome').value;
-
-                let db = await initDatabase();
-                let userId = await userExists(db, nome, cognome);
-
-                if (!userId) {
-                    userId = await saveUser(db, nome, cognome);
-                }
-
-                localStorage.setItem('userId', userId);
-                window.location.href = 'quiz.html';
-            });
-        });
-    </script>
+    <title>Calcola Punteggio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <h1>Registrazione Utente</h1>
-    <form id="registrationForm">
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" required><br><br>
-        <label for="cognome">Cognome:</label>
-        <input type="text" id="cognome" name="cognome" required><br><br>
-        <button id="saveButton">Salva</button>
-    </form>
+    <div class="container">
+        <h2>Quiz a Risposta Multipla</h2>
+        <div class="question">
+            <label for="username">Nome Utente:</label>
+            <input type="text" id="username" name="username">
+        </div>
+        <div class="question">
+            <p>1. Qual è la capitale d'Italia?</p>
+            <input type="radio" id="q1a" name="q1" value="0">
+            <label for="q1a">Milano</label><br>
+            <input type="radio" id="q1b" name="q1" value="1">
+            <label for="q1b">Roma</label><br>
+            <input type="radio" id="q1c" name="q1" value="0">
+            <label for="q1c">Napoli</label><br>
+        </div>
+        <div class="question">
+            <p>2. Qual è la capitale della Francia?</p>
+            <input type="radio" id="q2a" name="q2" value="1">
+            <label for="q2a">Parigi</label><br>
+            <input type="radio" id="q2b" name="q2" value="0">
+            <label for="q2b">Lione</label><br>
+            <input type="radio" id="q2c" name="q2" value="0">
+            <label for="q2c">Marsiglia</label><br>
+        </div>
+        <button onclick="calcolaPunteggio()">Calcola Punteggio</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function calcolaPunteggio() {
+            let username = document.getElementById('username').value;
+            let q1 = document.querySelector('input[name="q1"]:checked');
+            let q2 = document.querySelector('input[name="q2"]:checked');
+            let punteggio = 0;
+
+            if (q1) {
+                punteggio += parseInt(q1.value);
+            }
+            if (q2) {
+                punteggio += parseInt(q2.value);
+            }
+
+            let resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `${username}, il tuo punteggio è: ${punteggio}`;
+        }
+    </script>
 </body>
 </html>
