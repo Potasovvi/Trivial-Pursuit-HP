@@ -9,7 +9,7 @@
             // Funzione per inizializzare il database IndexedDB
             function initDatabase() {
                 return new Promise((resolve, reject) => {
-                    let request = indexedDB.open('UserDatabase', 1);
+                    let request = indexedDB.open('QuizDB', 1);
 
                     request.onupgradeneeded = (event) => {
                         let db = event.target.result;
