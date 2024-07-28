@@ -3,113 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modulo di Registrazione</title>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            // Funzione per inizializzare il database IndexedDB
-            function initDatabase() {
-                return new Promise((resolve, reject) => {
-                    let request = indexedDB.open('QuizDB', 1);
-
-                    request.onupgradeneeded = (event) => {
-                        let db = event.target.result;
-                        if (!db.objectStoreNames.contains('users')) {
-                            let objectStore = db.createObjectStore('users', { keyPath: 'id', autoIncrement: true });
-                            objectStore.createIndex('nome', 'nome', { unique: false });
-                            objectStore.createIndex('cognome', 'cognome', { unique: false });
-                        }
-                    };
-
-                    request.onsuccess = (event) => {
-                        resolve(event.target.result);
-                    };
-
-                    request.onerror = (event) => {
-                        reject(event.target.error);
-                    };
-                });
-            }
-
-            // Funzione per verificare se l'utente esiste già
-            function userExists(db, nome, cognome) {
-                return new Promise((resolve, reject) => {
-                    let transaction = db.transaction(['users'], 'readonly');
-                    let store = transaction.objectStore('users');
-                    let index = store.index('nome');
-                    let request = index.openCursor();
-
-                    request.onsuccess = (event) => {
-                        let cursor = event.target.result;
-                        if (cursor) {
-                            if (cursor.value.nome === nome && cursor.value.cognome === cognome) {
-                                resolve(true);
-                            } else {
-                                cursor.continue();
-                            }
-                        } else {
-                            resolve(false);
-                        }
-                    };
-
-                    request.onerror = (event) => {
-                        reject(event.target.error);
-                    };
-                });
-            }
-
-            // Funzione per salvare l'utente nel database
-            function saveUser(db, nome, cognome) {
-                return new Promise((resolve, reject) => {
-                    let transaction = db.transaction(['users'], 'readwrite');
-                    let store = transaction.objectStore('users');
-                    let user = { nome: nome, cognome: cognome, punteggio: '' };
-                    let request = store.add(user);
-
-                    request.onsuccess = (event) => {
-                        resolve(event.target.result);
-                    };
-
-                    request.onerror = (event) => {
-                        reject(event.target.error);
-                    };
-                });
-            }
-
-            // Evento click per il pulsante Salva
-            document.getElementById('saveButton').addEventListener('click', async (event) => {
-                event.preventDefault();
-                let nome = document.getElementById('nome').value;
-                let cognome = document.getElementById('cognome').value;
-
-                let db = await initDatabase();
-                let exists = await userExists(db, nome, cognome);
-
-                if (!exists) {
-                    await saveUser(db, nome, cognome);
-                    alert('Utente salvato con successo.');
-                    document.getElementById('nome').value = '';
-                    document.getElementById('cognome').value = '';
-
-                    window.location.href = `https://potasovvi.github.io/Trivial-Pursuit-HP/quiz.html?nome=${encodeURIComponent(nome)}`; // Reindirizza alla pagina del quiz con il nome utente nell'URL
-                   
-                //    window.location.href = 'https://potasovvi.github.io/Trivial-Pursuit-HP/index2.html'; 
-
-                } else {
-                    alert('Utente già presente.');
-                }
-            });
-        });
-    </script>
+    <title>Inserisci Nome Utente</title>
 </head>
 <body>
-    <h1>Modulo di Registrazione</h1>
-    <form id="registrationForm">
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" required><br><br>
-        <label for="cognome">Cognome:</label>
-        <input type="text" id="cognome" name="cognome" required><br><br>
-        <button id="saveButton">Salva</button>
-    </form>
+    <div>
+        <label for="username">Nome Utente:</label>
+        <input type="text" id="username" name="username">
+        <button onclick="salvaNomeUtente()">Salva Nome Utente</button>
+    </div>
+
+    <script>
+  // Funzione per inizializzare IndexedDB
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                let request = indexedDB.open('QuizDB', 1);
+
+                request.onsuccess = function(event) {
+                    resolve(event.target.result);
+                };
+
+                request.onerror = function(event) {
+                    reject(event.target.error);
+                };
+            });
+        }
+
+        // Funzione per recuperare i dati utente da IndexedDB
+        function getUserData(db, username) {
+            return new Promise((resolve, reject) => {
+                let transaction = db.transaction(['users'], 'readonly');
+                let objectStore = transaction.objectStore('users');
+                let request = objectStore.get(username);
+
+                request.onsuccess = function(event) {
+                    if (request.result) {
+                        resolve(request.result);
+                    } else {
+                        reject('Utente non trovato');
+                    }
+                };
+
+                request.onerror = function() {
+                    reject('Errore nel recupero dei dati utente');
+                };
+            });
+        }
+
+        // Funzione per aggiornare i dati utente in IndexedDB
+        function updateUserData(db, userData) {
+            return new Promise((resolve, reject) => {
+                let transaction = db.transaction(['users'], 'readwrite');
+                let objectStore = transaction.objectStore('users');
+                let request = objectStore.put(userData);
+
+                request.onsuccess = function() {
+                    resolve();
+                };
+
+                request.onerror = function() {
+                    reject('Errore nell\'aggiornamento dei dati utente');
+                };
+            });
+        }
+
+        // Funzione per calcolare il punteggio
+        async function calcolaPunteggio() {
+            let db;
+            try {
+                db = await initDB();
+            } catch (error) {
+                console.error('Errore nell\'inizializzazione del database', error);
+                return;
+            }
+
+            let username = localStorage.getItem('username'); // Ottieni il nome utente da localStorage
+            if (!username) {
+                console.error('Nome utente non trovato');
+                document.getElementById('result').innerHTML = 'Nome utente non trovato. Assicurati di aver effettuato l\'accesso.';
+                return;
+            }
+
+            let userData;
+            try {
+                userData = await getUserData(db, username);
+            } catch (error) {
+                console.error(error);
+                document.getElementById('result').innerHTML = 'Errore nel recupero dei dati utente.';
+                return;
+            }
+
+            let q1 = document.querySelector('input[name="q1"]:checked');
+            let q2 = document.querySelector('input[name="q2"]:checked');
+            let punteggio = 0;
+
+            if (q1) {
+                punteggio += parseInt(q1.value);
+            }
+            if (q2) {
+                punteggio += parseInt(q2.value);
+            }
+
+            userData.punteggio = punteggio;
+
+            try {
+                await updateUserData(db, userData);
+                document.getElementById('result').innerHTML = `${username}, il tuo punteggio è: ${punteggio}`;
+            } catch (error) {
+                console.error('Errore nell\'aggiornamento del database', error);
+                document.getElementById('result').innerHTML = 'Errore nell\'aggiornamento del database.';
+            }
+        }
+
+
+
+        
+        function salvaNomeUtente() {
+            let username = document.getElementById('username').value;
+            window.location.href = `pagina_quiz.html?username=${encodeURIComponent(username)}`; // Reindirizza alla pagina del quiz con il nome utente nell'URL
+        }
+    </script>
 </body>
 </html>
-
