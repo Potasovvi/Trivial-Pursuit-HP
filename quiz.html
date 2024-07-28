@@ -80,7 +80,7 @@
             return new Promise((resolve, reject) => {
                 let transaction = db.transaction(['users'], 'readonly');
                 let objectStore = transaction.objectStore('users');
-                let request = objectStore.get(nome);
+                let request = objectStore.get(username);
 
                 request.onsuccess = function(event) {
                     if (request.result) {
@@ -133,7 +133,7 @@
 
             let userData;
             try {
-                userData = await getUserData(db, nome);
+                userData = await getUserData(db, username);
             } catch (error) {
                 console.error(error);
                 document.getElementById('result').innerHTML = 'Errore nel recupero dei dati utente.';
