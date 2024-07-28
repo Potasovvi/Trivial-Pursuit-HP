@@ -3,113 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PIPIRIPACCHIO</title>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            function initDatabase() {
-                return new Promise((resolve, reject) => {
-                    let request = indexedDB.open('UserDatabase', 1);
-
-                    request.onupgradeneeded = (event) => {
-                        let db = event.target.result;
-                        if (!db.objectStoreNames.contains('users')) {
-                            let objectStore = db.createObjectStore('users', { keyPath: 'id', autoIncrement: true });
-                            objectStore.createIndex('nome', 'nome', { unique: false });
-                            objectStore.createIndex('cognome', 'cognome', { unique: false });
-                        }
-                    };
-
-                    request.onsuccess = (event) => {
-                        resolve(event.target.result);
-                    };
-
-                    request.onerror = (event) => {
-                        reject(event.target.error);
-                    };
-                });
-            }
-
-            function updateUserScore(db, userId, score) {
-                return new Promise((resolve, reject) => {
-                    let transaction = db.transaction(['users'], 'readwrite');
-                    let store = transaction.objectStore('users');
-                    let request = store.get(userId);
-
-                    request.onsuccess = (event) => {
-                        let user = event.target.result;
-                        user.punteggio += score;
-                        let updateRequest = store.put(user);
-                        updateRequest.onsuccess = () => {
-                            resolve();
-                        };
-                        updateRequest.onerror = (event) => {
-                            reject(event.target.error);
-                        };
-                    };
-
-                    request.onerror = (event) => {
-                        reject(event.target.error);
-                    };
-                });
-            }
-
-            document.getElementById('submitAnswer').addEventListener('click', async (event) => {
-                event.preventDefault();
-                let selectedAnswers = document.querySelectorAll('input[name="answer"]:checked');
-                if (selectedAnswers.length !== 2) {
-                    alert('Rispondi a tutte le domande.');
-                    return;
-                }
-
-                let correctAnswers = ['B', 'C']; // Le risposte corrette
-                let score = 0;
-                selectedAnswers.forEach((answer, index) => {
-                    if (answer.value === correctAnswers[index]) {
-                        score++;
-                    }
-                });
-
-                let userId = localStorage.getItem('userId');
-                if (!userId) {
-                    alert('Utente non trovato!');
-                    return;
-                }
-
-                let confirmation = confirm('Vuoi inviare le tue risposte?');
-                if (confirmation) {
-                    let db = await initDatabase();
-                    await updateUserScore(db, userId, score);
-                    alert(`Punteggio ottenuto: ${score}`);
-                }
-            });
-        });
-    </script>
+    <title>Inserisci Nome Utente</title>
 </head>
 <body>
-    <h1>Quiz a Risposta Multipla</h1>
-    <form id="quizForm">
-        <p>1. Qual è la capitale della Francia?</p>
-        <input type="radio" id="answer1A" name="answer1" value="A">
-        <label for="answer1A">A) Madrid</label><br>
-        <input type="radio" id="answer1B" name="answer1" value="B">
-        <label for="answer1B">B) Parigi</label><br>
-        <input type="radio" id="answer1C" name="answer1" value="C">
-        <label for="answer1C">C) Roma</label><br>
-        <input type="radio" id="answer1D" name="answer1" value="D">
-        <label for="answer1D">D) Berlino</label><br>
+    <div>
+        <label for="username">Nome Utente:</label>
+        <input type="text" id="username" name="username">
+        <button onclick="salvaNomeUtente()">Salva Nome Utente</button>
+    </div>
 
-        <p>2. Qual è la capitale dell'Italia?</p>
-        <input type="radio" id="answer2A" name="answer2" value="A">
-        <label for="answer2A">A) Madrid</label><br>
-        <input type="radio" id="answer2B" name="answer2" value="B">
-        <label for="answer2B">B) Parigi</label><br>
-        <input type="radio" id="answer2C" name="answer2" value="C">
-        <label for="answer2C">C) Roma</label><br>
-        <input type="radio" id="answer2D" name="answer2" value="D">
-        <label for="answer2D">D) Berlino</label><br><br>
-
-        <button id="submitAnswer">Submit</button>
-        <button id="updateUserScore(db, userId, score)">Update</button>        
-    </form>
+    <script>
+        function salvaNomeUtente() {
+            let username = document.getElementById('username').value;
+            window.location.href = `https://potasovvi.github.io/Trivial-Pursuit-HP/quiz.html?username=${encodeURIComponent(username)}`; // Reindirizza alla pagina del quiz con il nome utente nell'URL
+        }
+    </script>
 </body>
 </html>
